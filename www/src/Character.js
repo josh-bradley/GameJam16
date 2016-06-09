@@ -7,7 +7,7 @@ var Character = (function() {
         this.game_state = game_state;
         game_state.game.physics.arcade.enable(this);
         this.anchor.set(0.5);
-
+        
         this.framesPerSecond = 10;
         this.body.collideWorldBounds = true;    
         this.followers = []

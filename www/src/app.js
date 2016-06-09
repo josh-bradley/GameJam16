@@ -25,6 +25,11 @@ var BACKGROUND_SCALE = 4;
     //  Now start the Game state.
     game.state.start('Title');
 
+    if('serviceWorker' in navigator) {
+        navigator.serviceWorker
+            .register('/sw.js')
+            .then(function() { console.log('Service Worker Registered'); });
+    }
 })();
 
 

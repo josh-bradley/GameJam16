@@ -7,6 +7,7 @@ var PowerUp = (function() {
         };
         Prefab.call(this, game_state, 'PowerUp', {x:x, y:y}, properties);
         game_state.game.physics.arcade.enable(this);
+        this.fixedToCamera = true;
         this.anchor.set(0.5);
         this.height = 12;
         this.game = game_state.game;

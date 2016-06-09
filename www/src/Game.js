@@ -29,7 +29,7 @@ BasicGame.Game.prototype = {
         // * SHOW_ALL
         // * RESIZE
         // See http://docs.phaser.io/Phaser.ScaleManager.html for full document
-        this.scale.scaleMode = Phaser.ScaleManager.NO_SCALE;
+        this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         this.scale.setUserScale(2, 2, 0, 0);
         // If you wish to align your game in the middle of the page then you can
         // set this value to true. It will place a re-calculated margin-left
@@ -56,6 +56,12 @@ BasicGame.Game.prototype = {
     },
 
     preload: function() {
+        // Controls
+        this.load.image('keyboardLeft', 'asset/images/keyboardLeft.png');
+        this.load.image('keyboardUp', 'asset/images/keyboardUp.png');
+        this.load.image('keyboardDown', 'asset/images/keyboardDown.png');
+        this.load.image('keyboardRight', 'asset/images/keyboardRight.png');
+
         this.load.tilemap('tileset', 'asset/tileset.json', null, Phaser.Tilemap.TILED_JSON);
         this.load.tilemap('tileset_multi', 'asset/tileset_multi.json', null, Phaser.Tilemap.TILED_JSON);
         this.load.image('tiles', 'asset/tiles.png');
@@ -112,9 +118,28 @@ BasicGame.Game.prototype = {
         this.levelMusicSoundGroup = new SoundGroup(this, 'music', levelMusicNames);    
     },
 
-    create: function() {        
+    create: function() {
+        this.scale.scaleMode = Phaser.ScaleManager.RESIZE;
+        ///game.world.setBounds(0, 0, 2000, 2000);
+
         //this.game.add.plugin(Phaser.Plugin.Debug);
         this.initialiseGameState();
+
+        this.instructionLayer = this.game.add.group();
+        this.instructionLayer.z = 5;
+        this.instructionLayer.destroyChildren = true;
+
+        this.listenSwipe(function(direction) {
+            if (direction == 'up') {
+                this.character.moveUp();
+            } else if (direction == 'down') {
+                this.character.moveDown();
+            } else if (direction == 'left') {
+                this.character.moveLeft();
+            } else if (direction == 'right') {
+                this.character.moveRight();
+            }
+        }.bind(this), this.game);
 
         this.summonLayer = this.game.add.physicsGroup();    
 
@@ -128,8 +153,6 @@ BasicGame.Game.prototype = {
         this.characters.enableBody = true;
         this.characters.z = 3;
 
-        
-
         //http://phaser.io/examples/v2/input/cursor-key-movement
         cursors = this.game.input.keyboard.createCursorKeys();
         this.game.ai = new Ai();
@@ -138,6 +161,7 @@ BasicGame.Game.prototype = {
         this.character = new Character(this, this.world.centerX / 2, this.world.centerY, 'character');
         this.enemy = new Enemy(this, 'Enemy', this.world.centerX + (this.world.centerX / 2), this.world.centerY, 'enemy');
 
+        this.camera.follow(this.character);
         this.characters.addChild(this.character);
         this.characters.enableBody = true;
         this.game.physics.arcade.enable(this.characters);
@@ -211,12 +235,50 @@ BasicGame.Game.prototype = {
 
     gameResized: function(width, height) {
 
-        // This could be handy if you need to do any extra processing if the 
+        console.log("width: " + width);
+        console.log("height: " + height);
+        // This could be handy if you need to do any extra processing if the
         // game resizes. A resize could happen if for example swapping 
         // orientation on a device or resizing the browser window. Note that 
         // this callback is only really useful if you use a ScaleMode of RESIZE 
         // and place it inside your main game state.
 
+    },
+
+    listenSwipe: function(callback, game) {
+        var eventDuration;
+        var startPoint = {};
+        var endPoint = {};
+        var direction;
+        var minimum = {
+            duration: 75,
+            distance: 150
+        };
+        game.input.onDown.add(function(pointer) {
+            startPoint.x = pointer.clientX;
+            startPoint.y = pointer.clientY;
+        }, this);
+        game.input.onUp.add(function(pointer) {
+            direction = '';
+            eventDuration = game.input.activePointer.duration;
+            if (eventDuration > minimum.duration) {
+                endPoint.x = pointer.clientX;
+                endPoint.y = pointer.clientY;
+                // Check direction
+                if (endPoint.x - startPoint.x > minimum.distance) {
+                    direction = 'right';
+                } else if (startPoint.x - endPoint.x > minimum.distance) {
+                    direction = 'left';
+                } else if (endPoint.y - startPoint.y > minimum.distance) {
+                    direction = 'down';
+                } else if (startPoint.y - endPoint.y > minimum.distance) {
+                    direction = 'up';
+                }
+                if (direction) {
+                    callback(direction);
+                }
+            }
+        }, this);
     },
 
     initialiseGameState: function() {
@@ -235,9 +297,26 @@ BasicGame.Game.prototype = {
             this.character.moveLeft();
         } else if (cursors.right.isDown) {
             this.character.moveRight();
-        } else {
-            this.character.stop();
         }
+
+        // var deltaX = this.character.x - this.camera.x;
+
+        // var gap = 150;
+        // var offset = 5;
+        // if(deltaX < gap){
+        //     this.camera.x = this.character.x - gap - offset;
+        // } else if (deltaX > (this.camera.width - gap)){
+        //     this.camera.x = this.character.x - this.camera.width + gap + offset;
+        // }
+        //
+        // var deltaY = this.character.y - this.camera.y;
+        // if(deltaY < gap){
+        //     this.camera.y = this.character.y - gap - offset;
+        // } else if (deltaY > (this.camera.height - gap)){
+        //     this.camera.y = this.character.y - this.camera.height + gap + offset;
+        // }
+
+        this.runRitual();
 
         // TODO: All values and logic could belong in world.
         var screenShakeEffect = this.world_state.screenShake.effect;
@@ -326,7 +405,7 @@ BasicGame.Title.prototype = {
         // * SHOW_ALL
         // * RESIZE
         // See http://docs.phaser.io/Phaser.ScaleManager.html for full document
-        this.scale.scaleMode = Phaser.ScaleManager.NO_SCALE;        
+        this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         // If you wish to align your game in the middle of the page then you can
         // set this value to true. It will place a re-calculated margin-left
         // pixel value onto the canvas element which is updated on orientation /
@@ -363,7 +442,7 @@ BasicGame.Title.prototype = {
         this.background.scale.setTo(BACKGROUND_SCALE, BACKGROUND_SCALE);
         
         this.startGameKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-        this.startGameKey.onDown.add(this.startGame, this);
+        this.game.input.onDown.add(this.startGame, this);
     },
 
     startGame: function() {
@@ -387,7 +466,7 @@ BasicGame.Intro.prototype = {
         // * SHOW_ALL
         // * RESIZE
         // See http://docs.phaser.io/Phaser.ScaleManager.html for full document
-        this.scale.scaleMode = Phaser.ScaleManager.NO_SCALE;        
+        this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         // If you wish to align your game in the middle of the page then you can
         // set this value to true. It will place a re-calculated margin-left
         // pixel value onto the canvas element which is updated on orientation /
@@ -398,7 +477,7 @@ BasicGame.Intro.prototype = {
         // Force the orientation in landscape or portrait.
         // * Set first to true to force landscape. 
         // * Set second to true to force portrait.
-        this.scale.forceOrientation(true, false);
+        this.scale.forceOrientation(false, false);
         // Sets the callback that will be called when the window resize event
         // occurs, or if set the parent container changes dimensions. Use this 
         // to handle responsive game layout options. Note that the callback will
@@ -414,10 +493,10 @@ BasicGame.Intro.prototype = {
     },
     preload: function() {
         this.load.image('background', 'asset/images/intro.png');
-        // this.load.image('keyboardLeft', 'asset/images/keyboardLeft.png');
-        // this.load.image('keyboardUp', 'asset/images/keyboardUp.png');
-        // this.load.image('keyboardDown', 'asset/images/keyboardDown.png');
-        // this.load.image('keyboardRight', 'asset/images/keyboardRight.png');
+        this.load.image('keyboardLeft', 'asset/images/keyboardLeft.png');
+        this.load.image('keyboardUp', 'asset/images/keyboardUp.png');
+        this.load.image('keyboardDown', 'asset/images/keyboardDown.png');
+        this.load.image('keyboardRight', 'asset/images/keyboardRight.png');
         // this.load.image('keyboardCtrl', 'asset/images/keyboardCtrl.png');
         // this.load.image('keyboardSpacebar', 'asset/images/keyboardSpacebar.png');
 
@@ -432,16 +511,16 @@ BasicGame.Intro.prototype = {
         this.background.scale.setTo(BACKGROUND_SCALE, BACKGROUND_SCALE);
         
         this.startGameKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-        this.startGameKey.onDown.add(this.startGame, this);
+        this.game.input.onDown.add(this.startGame, this);
 
         // Keyboard controls
-        // this.instructionLayer = this.game.add.group();
-        // this.instructionLayer.z = 5;
-        // this.instructionLayer.destroyChildren = true;
+        this.instructionLayer = this.game.add.group();
+        this.instructionLayer.z = 5;
+        this.instructionLayer.destroyChildren = true;
 
         // var keys = ['keyboardLeft', 'keyboardRight', 'keyboardUp', 'keyboardDown', 'keyboardSpacebar'];
         // var keyX = 30;
-
+        //
         // var keyY = GAME_HEIGHT - 75;
         // for (var i = 0; i < keys.length; i++) {
         //     var keySprite = this.add.sprite(keyX, keyY, keys[i]);
@@ -484,7 +563,7 @@ BasicGame.YouWin.prototype = {
         // * SHOW_ALL
         // * RESIZE
         // See http://docs.phaser.io/Phaser.ScaleManager.html for full document
-        this.scale.scaleMode = Phaser.ScaleManager.NO_SCALE;
+        this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         // If you wish to align your game in the middle of the page then you can
         // set this value to true. It will place a re-calculated margin-left
         // pixel value onto the canvas element which is updated on orientation /
@@ -547,7 +626,7 @@ BasicGame.YouLose.prototype = {
         // * SHOW_ALL
         // * RESIZE
         // See http://docs.phaser.io/Phaser.ScaleManager.html for full document
-        this.scale.scaleMode = Phaser.ScaleManager.NO_SCALE;
+        this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         // If you wish to align your game in the middle of the page then you can
         // set this value to true. It will place a re-calculated margin-left
         // pixel value onto the canvas element which is updated on orientation /

@@ -226,6 +226,7 @@ var World = (function() {
                 xPosition,
                 48,
                 'enemyScoreIcon');
+            enemyScoreIcon.fixedToCamera = true;
             enemyScoreIcon.anchor.setTo(0.5, 0.5);
 
             this.game_state.hud.add(enemyScoreIcon);
@@ -239,6 +240,7 @@ var World = (function() {
                 xPosition,
                 64,
                 'playerScoreIcon');
+            scoreIcon.fixedToCamera = true;
             scoreIcon.anchor.setTo(0.5, 0.5);
 
             this.game_state.hud.add(scoreIcon);
