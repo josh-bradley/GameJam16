@@ -53,8 +53,8 @@ var SoundGroup = (function() {
         }
     };
 
-    SoundGroup.prototype.stopSound = function(){        
-        this.sound.stop();
+    SoundGroup.prototype.stopSound = function(){
+        this.sound && this.sound.stop();
         this.soundIndex = -1;
     };
 

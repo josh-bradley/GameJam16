@@ -41,7 +41,7 @@ BasicGame.Game.prototype = {
         // Force the orientation in landscape or portrait.
         // * Set first to true to force landscape. 
         // * Set second to true to force portrait.
-        this.scale.forceOrientation(true, false);
+        this.scale.forceOrientation(true, true);
         // Sets the callback that will be called when the window resize event
         // occurs, or if set the parent container changes dimensions. Use this 
         // to handle responsive game layout options. Note that the callback will
@@ -161,7 +161,7 @@ BasicGame.Game.prototype = {
         this.character = new Character(this, this.world.centerX / 2, this.world.centerY, 'character');
         this.enemy = new Enemy(this, 'Enemy', this.world.centerX + (this.world.centerX / 2), this.world.centerY, 'enemy');
 
-        this.camera.follow(this.character);
+        //this.camera.follow(this.character, null, 0.05, 0.05);
         this.characters.addChild(this.character);
         this.characters.enableBody = true;
         this.game.physics.arcade.enable(this.characters);
@@ -289,33 +289,34 @@ BasicGame.Game.prototype = {
         this.physics.arcade.collide(this.backgroundLayer, this.characters);
         this.physics.arcade.collide(this.backgroundLayer, this.enemies);
 
-        if (cursors.up.isDown) {
-            this.character.moveUp();
-        } else if (cursors.down.isDown) {
-            this.character.moveDown();
-        } else if (cursors.left.isDown) {
-            this.character.moveLeft();
-        } else if (cursors.right.isDown) {
-            this.character.moveRight();
+        if(cursors){
+            if (cursors.up.isDown) {
+                this.character.moveUp();
+            } else if (cursors.down.isDown) {
+                this.character.moveDown();
+            } else if (cursors.left.isDown) {
+                this.character.moveLeft();
+            } else if (cursors.right.isDown) {
+                this.character.moveRight();
+            }
         }
 
-        // var deltaX = this.character.x - this.camera.x;
+        var deltaX = this.character.x - this.camera.x;
 
-        // var gap = 150;
-        // var offset = 5;
-        // if(deltaX < gap){
-        //     this.camera.x = this.character.x - gap - offset;
-        // } else if (deltaX > (this.camera.width - gap)){
-        //     this.camera.x = this.character.x - this.camera.width + gap + offset;
-        // }
-        //
-        // var deltaY = this.character.y - this.camera.y;
-        // if(deltaY < gap){
-        //     this.camera.y = this.character.y - gap - offset;
-        // } else if (deltaY > (this.camera.height - gap)){
-        //     this.camera.y = this.character.y - this.camera.height + gap + offset;
-        // }
+        var gap = 100;
+        var offset = 200;
+        if(deltaX < gap){
+            this.camera.x = this.character.x - gap - offset;
+        } else if (deltaX > (this.camera.width - gap)){
+            this.camera.x = this.character.x - this.camera.width + gap + offset;
+        }
 
+        var deltaY = this.character.y - this.camera.y;
+        if(deltaY < gap){
+            this.camera.y = this.character.y - gap - offset;
+        } else if (deltaY > (this.camera.height - gap)){
+            this.camera.y = this.character.y - this.camera.height + gap + offset;
+        }
         this.runRitual();
 
         // TODO: All values and logic could belong in world.
@@ -604,6 +605,16 @@ BasicGame.YouWin.prototype = {
 
         this.music = this.game.add.audio('winMusic');
         this.game.sound.setDecodedCallback([this.music], this.startMusic, this);
+        this.game.input.onDown.add(this.restartGame, this);
+    },
+
+    restartGame: function() {
+        "use strict";
+
+        //this.instructionLayer.destroy();
+        this.music.stop();
+
+        this.game.state.start("Title");
     },
 
     startMusic: function() {
@@ -666,6 +677,17 @@ BasicGame.YouLose.prototype = {
 
         this.music = this.game.add.audio('loseMusic');
         this.game.sound.setDecodedCallback([this.music], this.startMusic, this);
+
+        this.game.input.onDown.add(this.restartGame, this);
+    },
+
+    restartGame: function() {
+        "use strict";
+
+        //this.instructionLayer.destroy();
+        this.music.stop();
+
+        this.game.state.start("Title", true);
     },
 
     startMusic: function() {

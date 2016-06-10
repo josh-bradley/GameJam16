@@ -1,4 +1,4 @@
-var cacheName = 'not-a-orge-0-0-03';
+var cacheName = 'not-a-orge-0-0-06';
 
 var filesToCache = [
     // We add this as well as index.html as the user may hit '/' or '/index.html'

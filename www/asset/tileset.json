@@ -40,7 +40,7 @@
          "opacity":1,
          "properties":
             {
-             "game_settings":"{\"level\":{\"use_alt_img\":false},\"init_conditions\" : {\"souls_per_ritual\": 1,\"distance_to_stone\": 64},\"win_conditions\" : {\"is_last_level\": false,\"player\": {\"angels_collected\": 15}},\"lose_conditions\" : {\"enemy\": {\"humans_devoured\": 15}}}"
+             "game_settings":"{\"level\":{\"use_alt_img\":false},\"init_conditions\" : {\"souls_per_ritual\": 1,\"distance_to_stone\": 64},\"win_conditions\" : {\"is_last_level\": false,\"player\": {\"angels_collected\": 15}},\"lose_conditions\" : {\"enemy\": {\"humans_devoured\": 1}}}"
             },
          "type":"tilelayer",
          "visible":true,

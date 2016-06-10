@@ -62,7 +62,7 @@ var FollowingMob = (function() {
         if (this.alive && !this.isSummoned) {
             this.game_state.game.physics.arcade.overlap(this, this.game_state.character, this.game_state.character.mobCollision, null, this);
      
-            if (!this.master) {
+            if (!this.master || !this.master.body) {
                 this.wanderAroundLikeAStupid();
             } else {
                 var dist = this.game.math.distance(this.body.position.x,
