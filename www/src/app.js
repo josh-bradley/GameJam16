@@ -7,7 +7,9 @@ var BACKGROUND_ANCHOR_Y = 0;
 var BACKGROUND_POSITION_Y = 0;
 var BACKGROUND_SCALE = 4;
 
-(function () {
+
+
+var startGame = function () {
     /* globals Phaser:false, BasicGame:false */
     //  Create your Phaser game and inject it into the game div.
     //  We did it in a window.onload event, but you can do it anywhere (requireJS load, anonymous function, jQuery dom ready, - whatever floats your boat)
@@ -30,7 +32,9 @@ var BACKGROUND_SCALE = 4;
             .register('/sw.js')
             .then(function() { console.log('Service Worker Registered'); });
     }
-})();
+};
+
+startGame();
 
 
 Array.prototype.max = function() {
@@ -40,3 +44,7 @@ Array.prototype.max = function() {
 Array.prototype.min = function() {
   return Math.min.apply(null, this);
 };
+
+window.onresize = function(){
+    document.querySelector("canvas").height = window.innerHeight;
+}

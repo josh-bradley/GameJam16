@@ -23,7 +23,7 @@ var Human = (function() {
 
         this.devourHuman = function(human, enemy) {         
             // TODO: Would rather this in a collision controller
-            this.game_state.world_state.devourHuman(human, enemy);            
+            this.game_state.world_state.devourHuman(human, enemy);
             enemy.devourHuman(human);
 
             this.makeNastyScreams();

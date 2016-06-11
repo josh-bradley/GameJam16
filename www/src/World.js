@@ -273,8 +273,9 @@ var World = (function() {
         }
 
         //console.log('tint : ' + tintColour)
-        this.game_state.groundLayer.tint = tintColour;
-        this.game_state.backgroundLayer.tint = tintColour;
+        // TODO: Need to figure out why this causes the camera shifts to break. 
+        //this.game_state.groundLayer.tint = tintColour;
+        //this.game_state.backgroundLayer.tint = tintColour;
     };
 
     World.prototype.createMap = function(level) {

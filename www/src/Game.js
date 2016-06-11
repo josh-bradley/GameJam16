@@ -120,7 +120,8 @@ BasicGame.Game.prototype = {
 
     create: function() {
         this.scale.scaleMode = Phaser.ScaleManager.RESIZE;
-        ///game.world.setBounds(0, 0, 2000, 2000);
+        this.game.world.setBounds(0, 0, 1024, 640);
+        document.querySelector("canvas").height = window.innerHeight;
 
         //this.game.add.plugin(Phaser.Plugin.Debug);
         this.initialiseGameState();
@@ -303,8 +304,8 @@ BasicGame.Game.prototype = {
 
         var deltaX = this.character.x - this.camera.x;
 
-        var gap = 100;
-        var offset = 200;
+        var gap = 80;
+        var offset = this.camera.width - gap * 2 - 20;
         if(deltaX < gap){
             this.camera.x = this.character.x - gap - offset;
         } else if (deltaX > (this.camera.width - gap)){
@@ -312,6 +313,7 @@ BasicGame.Game.prototype = {
         }
 
         var deltaY = this.character.y - this.camera.y;
+        offset = this.camera.height - gap * 2 - 20;
         if(deltaY < gap){
             this.camera.y = this.character.y - gap - offset;
         } else if (deltaY > (this.camera.height - gap)){
@@ -614,7 +616,8 @@ BasicGame.YouWin.prototype = {
         //this.instructionLayer.destroy();
         this.music.stop();
 
-        this.game.state.start("Title");
+        this.game.destroy();
+        startGame();
     },
 
     startMusic: function() {
@@ -687,7 +690,8 @@ BasicGame.YouLose.prototype = {
         //this.instructionLayer.destroy();
         this.music.stop();
 
-        this.game.state.start("Title", true);
+        this.game.destroy();
+        startGame();
     },
 
     startMusic: function() {
