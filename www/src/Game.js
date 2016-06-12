@@ -56,16 +56,10 @@ BasicGame.Game.prototype = {
     },
 
     preload: function() {
-        // Controls
-        this.load.image('keyboardLeft', 'asset/images/keyboardLeft.png');
-        this.load.image('keyboardUp', 'asset/images/keyboardUp.png');
-        this.load.image('keyboardDown', 'asset/images/keyboardDown.png');
-        this.load.image('keyboardRight', 'asset/images/keyboardRight.png');
-
-        this.load.tilemap('tileset', 'asset/tileset.json', null, Phaser.Tilemap.TILED_JSON);
-        this.load.tilemap('tileset_multi', 'asset/tileset_multi.json', null, Phaser.Tilemap.TILED_JSON);
-        this.load.image('tiles', 'asset/tiles.png');
-        this.load.image('tilesdarkgreen', 'asset/tilesdarkgreen.png');
+        this.load.tilemap('tileset', 'asset/tileset/tileset.json', null, Phaser.Tilemap.TILED_JSON);
+        this.load.image('tiles', 'asset/tileset/tiles.png');
+        this.load.image('tiles', 'asset/tileset/tileSnow.png');
+        this.load.image('tilesdarkgreen', 'asset/tileset/tilesdarkgreen.png');
 
         //http://phaser.io/examples/v2/sprites/spritesheet        
         this.load.spritesheet('character', 'asset/images/character_spritesheet_32.png', 32, 32, 12);
@@ -85,16 +79,16 @@ BasicGame.Game.prototype = {
         //http://phaser.io/examples/v2/audio/sound-complete
         var screamNames = ['screamWilhelm',
             'screamCalzon',
-            'scream_1',
-            'scream_2',
-            'scream_3',
-            'scream_4',
-            'scream_5',
-            'scream_6',
-            'scream_7',
-            'scream_8',
-            'scream_9',
-            'scream_10'
+            'Scream_1',
+            'Scream_2',
+            'Scream_3',
+            'Scream_4',
+            'Scream_5',
+            'Scream_6',
+            'Scream_7',
+            'Scream_8',
+            'Scream_9',
+            'Scream_10'
         ];
         this.screamSoundGroup = new SoundGroup(this, 'sfx', screamNames);
 
@@ -125,10 +119,6 @@ BasicGame.Game.prototype = {
 
         //this.game.add.plugin(Phaser.Plugin.Debug);
         this.initialiseGameState();
-
-        this.instructionLayer = this.game.add.group();
-        this.instructionLayer.z = 5;
-        this.instructionLayer.destroyChildren = true;
 
         this.listenSwipe(function(direction) {
             if (direction == 'up') {
@@ -496,12 +486,6 @@ BasicGame.Intro.prototype = {
     },
     preload: function() {
         this.load.image('background', 'asset/images/intro.png');
-        this.load.image('keyboardLeft', 'asset/images/keyboardLeft.png');
-        this.load.image('keyboardUp', 'asset/images/keyboardUp.png');
-        this.load.image('keyboardDown', 'asset/images/keyboardDown.png');
-        this.load.image('keyboardRight', 'asset/images/keyboardRight.png');
-        // this.load.image('keyboardCtrl', 'asset/images/keyboardCtrl.png');
-        // this.load.image('keyboardSpacebar', 'asset/images/keyboardSpacebar.png');
 
         this.load.audio('introMusic', 'asset/music/intro_music.mp3');        
     },
@@ -517,9 +501,9 @@ BasicGame.Intro.prototype = {
         this.game.input.onDown.add(this.startGame, this);
 
         // Keyboard controls
-        this.instructionLayer = this.game.add.group();
-        this.instructionLayer.z = 5;
-        this.instructionLayer.destroyChildren = true;
+        //this.instructionLayer = this.game.add.group();
+        //this.instructionLayer.z = 5;
+        //this.instructionLayer.destroyChildren = true;
 
         // var keys = ['keyboardLeft', 'keyboardRight', 'keyboardUp', 'keyboardDown', 'keyboardSpacebar'];
         // var keyX = 30;

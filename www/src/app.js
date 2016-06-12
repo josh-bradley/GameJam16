@@ -30,7 +30,8 @@ var startGame = function () {
     if('serviceWorker' in navigator) {
         navigator.serviceWorker
             .register('/sw.js')
-            .then(function() { console.log('Service Worker Registered'); });
+            .then(function() { console.log('Service Worker Registered'); })
+            .catch(function(e){console.log(e)});
     }
 };
 
